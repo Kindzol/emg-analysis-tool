@@ -108,26 +108,14 @@ plt.show()
 
 WINDOW_MS = 200
 
-THRESHOLD_FACTORS = {
-    "emg_datasets/EP_2807_MADC_p6_kl_EMG_trening1":       0.1, # there is just one big contraction
-    "emg_datasets/EP_2807_MADC_p6_kl_EMG_przysiadyprzed": 2,
-    "emg_datasets/EP_2807_MADC_p6_kl_EMG_przysiadypo":    1.25,
-    "emg_datasets/EP_2807_MADC_p6_kl_EMG_kon":            6, # we can see that a person contracted the muscle as much as possible and hold them, hence the constant activity
-    "emg_datasets/EP_2807_MADC_p6_kl_EMG_kon5kg":         1.55,
-    "emg_datasets/EP_2807_MADC_p6_kl_EMG_izo":            5,
-}
-
-
 WINDOW = int(WINDOW_MS * FS / 1000) # number of samples in the window
 
+K = 0.5
 for dataset in emg_data:
-    factor = THRESHOLD_FACTORS[dataset]
-    rms = (emg_data[dataset]["emg rectified"].pow(2).rolling(window=WINDOW, center=True).mean().apply(np.sqrt))
+    rms = (emg_data[dataset]["emg rectified"].pow(2) .rolling(window=WINDOW, center=True).mean().apply(np.sqrt))
     emg_data[dataset]["emg rms"] = rms
 
-    # the first 500 samples = muscle rest so the RMS average of this portion represents the "natural noise"
-    baseline = rms.iloc[:500].mean() # first 500 ms as baseline
-    threshold = baseline * factor
+    threshold = np.percentile(rms.dropna(), 50) * K  # threshold based on the median of rms of entire signal
     emg_data[dataset]["threshold"] = threshold
     emg_data[dataset]["active"] = (rms > threshold).astype(int)
 
@@ -138,7 +126,7 @@ print("applied RMS-based onset detection")
 
 
 TRIM_PERCENT = 0.1  # trim 10% from the start and end of each contraction
-def get_contraction(df, min_duration=100, trim_percent=TRIM_PERCENT):
+def get_contraction(df, min_duration=150, trim_percent=TRIM_PERCENT):
     contractions = []
     active = df["active"].values
     in_contraction = False
@@ -183,7 +171,7 @@ all_features = {}
 
 for dataset in emg_data:
     df = emg_data[dataset]
-    contractions = get_contraction(df, min_duration=100)
+    contractions = get_contraction(df, min_duration=150)
 
     emg_data[dataset]["active trimmed"] = 0
     for contraction in contractions:
@@ -265,7 +253,6 @@ plt.tight_layout(rect=[0, 0, 1, 1])
 plt.tight_layout()
 plt.show()
 
-# frequency domain
-# def compute_frequency_domain_features( )
+
 
 
