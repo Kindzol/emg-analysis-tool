@@ -22,6 +22,7 @@ def plot_raw_vs_filtered(emg):
     axes[0].set_title("raw EMG signal")
     axes[0].set_ylabel("amplitude [mV]")
     axes[0].set_xlabel("sample number")
+    axes[0].tick_params(labelbottom=True)
 
     axes[1].plot(emg["sample"], emg["emg filtered"], linewidth=0.5, color="red")
     axes[1].set_title("filtered EMG signal (bandpass 20-450 Hz + notch 50 Hz)")
@@ -42,6 +43,7 @@ def plot_onset_detection(emg):
     axes[0].set_ylabel("amplitude [mV]")
     axes[0].set_xlabel("sample number")
     axes[0].legend(fontsize=9)
+    axes[0].tick_params(labelbottom=True)
 
     axes[1].plot(emg["sample"], emg["emg rms"], linewidth=1, color="blue", label="RMS envelope")
     axes[1].axhline(y=emg["threshold"].iloc[0], color="red", linewidth=1, linestyle="--", label="threshold")
