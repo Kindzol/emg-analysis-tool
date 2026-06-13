@@ -16,7 +16,7 @@ def pattern_parser(filepath):
 
     exercise = parts[-1]
 
-    limb_meaning = {"kl": "left limb", "kp": "right limb"}
+    limb_meaning = {"kl": "left_limb", "kp": "right_limb"}
     limb = next((limb_meaning[p] for p in parts if p in limb_meaning), "unknown")
 
     signal_type = "EMG" if "EMG" in parts else "unknown"

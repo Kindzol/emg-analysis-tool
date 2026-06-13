@@ -224,7 +224,7 @@ class EMGApp(QMainWindow):
             default_name = "emg_plot"
 
         path, _ = QFileDialog.getSaveFileName(
-            self, "Save plot", default_name, "PNG (*.png);;PDF (*.pdf);;SVG (*.svg)"
+            self, "Save plot", default_name, "PNG (*.png);;PDF (*.pdf);;SVG (*.svg);;EPS (*.eps)"
         )
         if not path:
             return
