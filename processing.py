@@ -61,7 +61,8 @@ def onset_detection(emg):
     rms = (emg["emg rectified"].pow(2) .rolling(window=window, center=True).mean().apply(np.sqrt))
     emg["emg rms"] = rms
 
-    threshold = np.percentile(rms.dropna(), 50) * K # threshold based on the median of rms of entire signal
+    #threshold = np.percentile(rms.dropna(), 50) * K # threshold based on the median of rms of entire signal
+    threshold = rms.dropna().mean() * K
     emg["threshold"] = threshold
     emg["active"] = (rms > threshold).astype(int)
     return emg
